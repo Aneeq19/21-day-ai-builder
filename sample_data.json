@@ -1,0 +1,9 @@
+{
+  "patient_name": "John Demo",
+  "dob": "01/01/1995",
+  "insurance_company": "Demo Dental Plan",
+  "member_id": "DEMO12345",
+  "group_number": "GRP001",
+  "procedure": "Crown",
+  "notes": "Fictional record for portfolio demonstration only."
+}
