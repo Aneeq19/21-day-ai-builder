@@ -5,6 +5,7 @@ Educational demo only. Use fictional/dummy patient data; do not enter real PHI.
 
 import json
 import os
+import time
 from typing import Any
 
 from dotenv import load_dotenv
@@ -44,27 +45,57 @@ Remember: this is preparation for verification, not proof of benefits.
 """
 
 
+def _parse_response(response: Any) -> dict[str, Any]:
+    text = (response.text or "").strip()
+    if text.startswith("```"):
+        text = text.removeprefix("```json").removeprefix("```")
+        text = text.removesuffix("```").strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("The model did not return valid JSON. Please try again.") from exc
+
+
 def analyze_verification(patient: dict[str, str]) -> dict[str, Any]:
-    """Ask Gemini for a structured verification plan."""
+    """Ask Gemini for a structured plan, with fallback models for temporary 503s."""
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError(
             "GEMINI_API_KEY is missing. Copy .env.example to .env and add your key."
         )
 
-    model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
+    preferred = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
+    # If the preferred preview/model is overloaded, automatically try stable,
+    # lightweight Gemini models instead of failing the live demo immediately.
+    models = []
+    for name in (preferred, "gemini-2.5-flash", "gemini-2.5-flash-lite"):
+        if name not in models:
+            models.append(name)
+
     client = genai.Client(api_key=api_key)
-    response = client.models.generate_content(
-        model=model,
-        contents=build_prompt(patient),
-    )
+    last_error = None
 
-    text = (response.text or "").strip()
-    if text.startswith("```"):
-        text = text.removeprefix("```json").removeprefix("```")
-        text = text.removesuffix("```").strip()
+    for model in models:
+        for attempt in range(2):
+            try:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=build_prompt(patient),
+                )
+                return _parse_response(response)
+            except Exception as exc:
+                last_error = exc
+                message = str(exc).lower()
+                temporary = any(
+                    marker in message
+                    for marker in ("503", "unavailable", "high demand", "resource exhausted")
+                )
+                if not temporary:
+                    raise
+                if attempt == 0:
+                    time.sleep(1.5)
 
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("The model did not return valid JSON. Please try again.") from exc
+    raise RuntimeError(
+        "Gemini is temporarily busy across the available models. "
+        "Please wait a moment and click Generate again."
+    ) from last_error
