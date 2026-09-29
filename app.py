@@ -3,9 +3,9 @@
 import streamlit as st
 from dental_ai import analyze_verification
 
-st.set_page_config(page_title="DentalVerify AI", page_icon="🦷", layout="wide")
+st.set_page_config(page_title="DentalVerify AI by Aneeq Jawed | 21-Day AI Builder", page_icon="🦷", layout="wide")
 
-st.title("🦷 DentalVerify AI")
+st.title("🦷 DentalVerify AI by Aneeq Jawed")
 st.markdown("#### Turn dental insurance intake into a structured verification-prep plan")
 st.caption("Built by Aneeq • 21-Day AI Builder • Hackathon Edition")
 
