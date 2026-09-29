@@ -1,8 +1,11 @@
-# 🦷 DentalVerify AI
+# 🦷 DentalVerify AI by Aneeq Jawed
+
+## 21-Day AI Builder · Dental Insurance Verification Preparation Assistant
 
 **AI-powered preparation assistant for structured dental insurance verification.**
 
-🌐 **Live demo:** https://21-day-ai-builder-byaneeq.streamlit.app/
+🌐 **Live app:** https://21-day-ai-builder-byaneeq.streamlit.app/  
+🧠 **Advanced AgentVerify AI project:** https://agentverify-ai.streamlit.app/
 
 DentalVerify AI is the product built during my 21-Day AI Builder sprint. It turns fictional dental patient/insurance intake information into a structured verification-preparation workflow for front-desk staff.
 
@@ -97,3 +100,8 @@ Potential next steps include saved verification cases, exportable reports, confi
 ---
 
 Built as part of a practical 21-Day AI Builder sprint: **learn → build → test → deploy → present**.
+
+
+## Search keywords
+
+DentalVerify AI, Aneeq Jawed, 21-Day AI Builder, dental insurance verification assistant, dental eligibility workflow, Python Streamlit Gemini project.
